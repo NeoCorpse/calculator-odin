@@ -26,8 +26,8 @@ body {
     border-radius: 9px;
     font-size: 60px;
     display: flex;
-    justify-content: flex-end;
-    align-items: flex-end;
+    justify-content: space-between;
+    align-items:flex-end;
     flex-direction: column;
 }
 

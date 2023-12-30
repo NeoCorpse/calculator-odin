@@ -55,18 +55,20 @@ numBtns.forEach(button => {
 
 operators.forEach(button => {
     button.addEventListener('click', () => {
-        if (display.textContent == 0) return
+        let value = button.textContent
+        if (display.textContent == 0) {
+            // if (myOps.includes(former.textContent.slice(-2,-1))) former.textContent = `${former.textContent.slice(0,-2)}${value}`
+            return
+        } 
         if (resultDisplayed === true) {
             former.textContent = display.textContent
             display.textContent = ''
             console.log('woohoo')
         }
-        let value = button.textContent
+        
         former.textContent += `${display.textContent} ${value} `;
         display.textContent = 0
         resultDisplayed = false
-
-        
     })
 })
 
@@ -74,6 +76,7 @@ equals.addEventListener('click', () => {
     if (!former.textContent.includes('=')) {
         calculate();
     former.textContent += '=';
+    resultDisplayed = true
     }
 })
 
@@ -107,5 +110,4 @@ function calculate() {
 
     display.textContent = `${myResult}`
     console.log(myResult)
-    resultDisplayed = true 
 }
