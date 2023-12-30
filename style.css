@@ -24,6 +24,11 @@ body {
     flex: auto;
     margin: 13px;
     border-radius: 9px;
+    font-size: 60px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    flex-direction: column;
 }
 
 .buttons {
@@ -68,4 +73,8 @@ button {
     flex: auto;
     height: 70px;
     background-color: #45A29E;
+}
+
+.span1 {
+    font-size: 30px;
 }
