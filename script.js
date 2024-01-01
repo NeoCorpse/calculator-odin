@@ -10,104 +10,112 @@ const equals = document.querySelector('.equals')
 const period = document.querySelector('.dot')
 const myOps = ['+', '-', '*', '/'] 
 const myOperators = {
-    sum(a, b) {
-        return +a + +b
-    },
-    difference(a, b) {
-        return a-b
-    },
-    multiply(a,b) {
-        return a * b
-    },
-    divide(a,b) {
-        return a / b
-    }
+    sum(a, b) {return +a + +b},
+    difference(a, b) {return a-b},
+    multiply(a,b) {return a * b},
+    divide(a,b) {return a / b}
 }
 
-let num = 0;
-let resultDisplayed = false;
-
-clearBtn.addEventListener('click', () => clear())
-
-function clear() {
-    display.textContent = 0
+function clear () {
     former.textContent = ''
+    display.textContent = 0
+    ops = 0;
 }
 
-deleteBtn.addEventListener('click', () => {
-    display.textContent = display.textContent.slice(0, -1)
+function removeFunction() {
+    if (display.textContent.length > 1) display.textContent = display.textContent.slice(0,-1)
+    else display.textContent = 0
+}
+
+//on operator click, calculate and update former
+    //takes number in display, appends operator and puts in former
+    //performs previous operation, puts answer and appends operator
+    //0 is placed in display
+
+operators.forEach(button => {
+    button.addEventListener('click', ()=> {
+        if (former.textContent.includes('=') || !former.textContent) {
+            former.textContent = `${display.textContent} ${button.textContent}`
+            display.textContent = 0
+        } else if (former.textContent) {
+        former.textContent += ` ${display.textContent}` 
+        let x = former.textContent.split(' ')
+        let ops = x.filter(value => myOps.includes(value))
+        let nums = x.filter(value => !myOps.includes(value))
+        let result;
+
+        switch(ops[0]) {
+            case '+':
+                result = myOperators.sum(nums[0], nums[1])
+                break;
+            case '-':
+                result = myOperators.difference(nums[0], nums[1])
+                break;
+            case '/':
+                result = myOperators.divide(nums[0], nums[1])
+                break;
+            case '*':
+                result = myOperators.multiply(nums[0], nums[1])
+                break;
+            default:
+                console.log('ERROR')
+        }
+        former.textContent = `${result} ${button.textContent}`
+        display.textContent = 0
+        } 
+    })
 })
 
 numBtns.forEach(button => {
-    button.addEventListener('click', () => {
-        if (display.textContent == 0 && button.textContent == 0) return
-        if (display.textContent == 0) display.textContent = ''
-        if (display.textContent) clear
-        if (resultDisplayed === true) {
-            display.textContent = ''
-            former.textContent = ''
-        }
-        let value = button.textContent
-        display.textContent += value;
-        resultDisplayed = false;
+    button.addEventListener('click', ()=> {
+        if (display.textContent == 0) display.textContent = button.textContent
+        else display.textContent += button.textContent
     })
 })
 
-operators.forEach(button => {
-    button.addEventListener('click', () => {
-        let value = button.textContent
-        if (display.textContent == 0) {
-            // if (myOps.includes(former.textContent.slice(-2,-1))) former.textContent = `${former.textContent.slice(0,-2)}${value}`
-            return
-        } 
-        if (resultDisplayed === true) {
-            former.textContent = display.textContent
-            display.textContent = ''
-            console.log('woohoo')
-        }
-        
-        former.textContent += `${display.textContent} ${value} `;
-        display.textContent = 0
-        resultDisplayed = false
-    })
+clearBtn.addEventListener('click', () => {
+    clear()
 })
 
-equals.addEventListener('click', () => {
-    if (!former.textContent.includes('=')) {
-        calculate();
-    former.textContent += '=';
-    resultDisplayed = true
+deleteBtn.addEventListener('click', ()=> {
+    removeFunction()
+})
+//on equal click, append number in display to former and calculate
+    //after, append equal sign
+    // display contains final answer
+    //after equal is clicked, pressing another button clears the calculator
+
+equals.addEventListener('click', ()=> {
+    if ((!former.textContent || former.textContent.includes('='))) {
+        former.textContent = `${display.textContent} =`
+    } else {
+        former.textContent += ` ${display.textContent}`
+        let x = former.textContent.split(' ')
+        let ops = x.filter(value => myOps.includes(value))
+        let nums = x.filter(value => !myOps.includes(value))
+        let result;
+
+        switch(ops[0]) {
+            case '+':
+                result = myOperators.sum(nums[0], nums[1])
+                break;
+            case '-':
+                result = myOperators.difference(nums[0], nums[1])
+                break;
+            case '/':
+                result = myOperators.divide(nums[0], nums[1])
+                break;
+            case '*':
+                result = myOperators.multiply(nums[0], nums[1])
+                break;
+            default:
+                console.log('ERROR')
+        }
+        former.textContent = `${x.join(' ')} =`
+        display.textContent = result
     }
 })
 
-function calculate() {
-    former.textContent += `${display.textContent}`
-    let x = former.textContent.split(' ')
-
-    let operators = x.filter(val => myOps.includes(val))
-    let numbers = x.filter(val => !myOps.includes(val))
-    let i = 0;
-
-    let myResult = numbers.reduce((total, number) => {
-        switch(operators[i]) {
-            case '+':
-                total = myOperators.sum(total,number)
-                break;
-            case '-':
-                total = myOperators.difference(total,number)
-                break;
-            case '*':
-                total = myOperators.multiply(total, number)
-                break;
-            case '/':
-                total = myOperators.divide(total, number)
-        }
-        i++;
-
-        return total
-
-    },)
-
-    display.textContent = `${myResult}`
-    console.log(myResult)
-}
+period.addEventListener('click', () => {
+    if (!display.textContent.includes('.')) display.textContent += '.'
+})
